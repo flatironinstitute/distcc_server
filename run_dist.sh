@@ -18,7 +18,7 @@ servers=$(scontrol show hostnames $raw_servers)
 DISTCC_HOSTS="--localslots_cpp=24 "
 for server in $servers ; do
     nprocs=$(sinfo --noheader --nodes=${server} --format=%c)
-    njobs=$(expr 2 \* $nprocs)
+    njobs=$((2 * nprocs))
     DISTCC_HOSTS="$DISTCC_HOSTS $server/$njobs"
 done
 
@@ -47,4 +47,4 @@ echo "CC set to '$CC'"
 echo "CXX set to '$CXX'"
 
 # Pass the buck :)
-eval $@
+eval "$@"
