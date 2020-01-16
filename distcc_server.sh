@@ -7,4 +7,5 @@ module load gcc
 module load modules-nix
 module load nix/distcc
 
-srun --ntasks-per-node=1 distccd --daemon --verbose --no-detach --allow ${HOST}
+submitting_ip=$(dig +short ${SLURM_SUBMIT_HOST}.flatironinstitute.org)
+srun --ntasks-per-node=1 distccd --daemon --verbose --no-detach --allow ${submitting_ip}

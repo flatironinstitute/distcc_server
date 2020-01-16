@@ -23,13 +23,12 @@ your environment to use `distcc`, and then calls your build program.
 To run the server, from any directory,
 ```
 module load slurm
-sbatch --export=ALL,HOST=$(hostname -i) --output=${HOME}/distcc_server_%j.log /path/to/distcc_server.sh
+sbatch --output=${HOME}/distcc_server_%j.log /path/to/distcc_server.sh
 ```
 
-The export argument is necessary to let `distccd` know what the local machine's IP address is
-and allow connections from it. The output argument is only strictly necessary when running the
-server from a path that isn't on the shared file system. Note that both of these arguments are
-trivially hardcoded into the server script itself to save yourself the annoying headache
+The output argument is only strictly necessary when running the server from a path that isn't
+on the shared file system. Note that both of these arguments are trivially hardcoded into the
+server script itself to save yourself the annoying headache
 
 ```
 #SBATCH --output=/path/to/logs/distcc_server_%j.log
