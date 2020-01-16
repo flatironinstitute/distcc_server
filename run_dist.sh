@@ -1,29 +1,22 @@
 #!/usr/bin/env bash
 
-# Detect which nodes distcc daemon running on
-raw_servers=$(squeue --format=%N --noheader -u $USER -n distcc_server)
-if [[ -z "$raw_servers" ]]; then
-    echo "distcc_server seemingly not running"
-    exit
-fi
-server_state=$(squeue --format=%t --noheader -u $USER -n distcc_server)
-if [[ "R" != "$server_state" ]]; then
-    echo "distcc_server not in run state. Wait until running and try again"
-    exit
-fi
-servers=$(scontrol show hostnames $raw_servers)
+dotfile="$HOME/.distcc_server"
 
-# Format DISTCC_HOSTS environment variable to use 2x number of available cores for each node
-# and 24 localhost precompilation processes
-DISTCC_HOSTS="--localslots_cpp=24 "
-for server in $servers ; do
-    nprocs=$(sinfo --noheader --nodes=${server} --format=%c)
-    njobs=$((2 * nprocs))
-    DISTCC_HOSTS="$DISTCC_HOSTS $server/$njobs"
-done
+if [ -f "$dotfile" ]; then
+    jobid="$(head -n1 $dotfile)"
+    jobid="${jobid//#}"
+    . $dotfile
+    jobname=$(squeue --noheader -j $jobid --format=%j)
+    if [[ "$jobname" != "distcc_server" ]]; then
+        echo "No distcc server found at jobid=$jobid, likely a stale dotfile=$dotfile"
+        exit 1
+    fi
+else
+    echo "No distcc server found at '$dotfile', have you started distcc_server.sh?"
+    exit 1
+fi
 
-export DISTCC_HOSTS
-echo "Set distcc hosts to '$DISTCC_HOSTS'"
+echo "DISTCC_HOSTS set to '$DISTCC_HOSTS'"
 
 # Don't use NFS mounts for '$DISTCC_DIR', which defaults to '$HOME'. distcc uses file locks and
 # other state data in '$DISTCC_DIR/.distcc', which should be on a fast drive with proper
