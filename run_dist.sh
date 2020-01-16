@@ -16,11 +16,10 @@ servers=$(scontrol show hostnames $raw_servers)
 # Format DISTCC_HOSTS environment variable to use 2x number of available cores for each node
 # and 24 localhost precompilation processes
 DISTCC_HOSTS="--localslots_cpp=24 "
-for i in $servers ; do
-    hostname=$(sinfo --noheader --nodes=${i} --format=%N)
-    nprocs=$(sinfo --noheader --nodes=${i} --format=%c)
+for server in $servers ; do
+    nprocs=$(sinfo --noheader --nodes=${server} --format=%c)
     njobs=$(expr 2 \* $nprocs)
-    DISTCC_HOSTS="$DISTCC_HOSTS $hostname/$njobs"
+    DISTCC_HOSTS="$DISTCC_HOSTS $server/$njobs"
 done
 
 export DISTCC_HOSTS
