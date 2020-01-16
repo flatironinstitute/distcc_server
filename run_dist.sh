@@ -31,8 +31,8 @@ echo "Set distcc hosts to '$DISTCC_HOSTS'"
 export DISTCC_DIR=/dev/shm
 
 # Set default compiler to gnu suite if unset
-[ ! -z "$CC" ] || export CC='distcc gcc'
-[ ! -z "$CXX" ] || export CXX='distcc g++'
+[ ! -z "$CC" ] || export CC='gcc'
+[ ! -z "$CXX" ] || export CXX='g++'
 
 # Wrap input compilers if supplied without prepending distcc
 case "$CC" in
