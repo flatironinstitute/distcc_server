@@ -7,4 +7,4 @@ module load gcc
 module load modules-nix
 module load nix/distcc
 
-srun distccd --daemon --verbose --no-detach --allow ${HOST}
+srun --ntasks-per-node=1 distccd --daemon --verbose --no-detach --allow ${HOST}
